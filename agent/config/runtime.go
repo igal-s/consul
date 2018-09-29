@@ -1469,7 +1469,7 @@ func (c *RuntimeConfig) APIConfig(includeClientCerts bool) (*api.Config, error) 
 	}
 
 	unixAddr, httpAddr, httpsAddr := c.ClientAddress()
-
+	fmt.Printf("[DEBUG-tmp] runtime: APIConfig: unixAddr = %s, httpAddr = %s, httpsAddr = %s\n", unixAddr, httpAddr, httpsAddr)
 	if httpsAddr != "" {
 		cfg.Address = httpsAddr
 		cfg.Scheme = "https"
@@ -1491,6 +1491,7 @@ func (c *RuntimeConfig) APIConfig(includeClientCerts bool) (*api.Config, error) 
 	} else {
 		return nil, fmt.Errorf("No suitable client address can be found")
 	}
+	fmt.Printf("[DEBUG-tmp] runtime: APIConfig: cfg.TLSConfig:  %+v\n", cfg.TLSConfig)
 
 	return cfg, nil
 }

@@ -360,7 +360,7 @@ func defaultConfig(transportFn func() *http.Transport) *Config {
 			config.TLSConfig.InsecureSkipVerify = true
 		}
 	}
-
+	fmt.Printf("[DEBUG-tmp] api: defaultConfig: config:  %+v\n", config)
 	return config
 }
 

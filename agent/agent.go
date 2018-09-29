@@ -731,6 +731,8 @@ func (a *Agent) reloadWatches(cfg *config.RuntimeConfig) error {
 	// Fire off a goroutine for each new watch plan.
 	for _, wp := range watchPlans {
 		config, err := a.config.APIConfig(true)
+		a.logger.Printf("[DEBUG-tmp] agent: a.config: %+v\n", a.config)
+		a.logger.Printf("[DEBUG-tmp] agent: config: %+v\n", config)
 		if err != nil {
 			a.logger.Printf("[ERR] agent: Failed to run watch: %v", err)
 			continue
@@ -747,11 +749,12 @@ func (a *Agent) reloadWatches(cfg *config.RuntimeConfig) error {
 				wp.Handler = makeHTTPWatchHandler(a.LogOutput, httpConfig)
 			}
 			wp.LogOutput = a.LogOutput
-
+			a.logger.Printf("[DEBUG-tmp] agent: config.TLSConfig.Address = %s", config.TLSConfig.Address)
 			addr := config.Address
 			if config.Scheme == "https" {
-				addr = "https://" + addr
+				addr = "https://" + config.TLSConfig.Address
 			}
+			a.logger.Printf("[DEBUG-tmp] agent: reloadWatches will be using %s", addr)
 
 			if err := wp.RunWithConfig(addr, config); err != nil {
 				a.logger.Printf("[ERR] agent: Failed to run watch: %v", err)
@@ -2112,6 +2115,7 @@ func (a *Agent) setupTLSClientConfig(skipVerify bool) (tlsClientConfig *tls.Conf
 		tlsConfig.CAPath = a.config.CAPath
 	}
 	tlsClientConfig, err = api.SetupTLSConfig(tlsConfig)
+	a.logger.Printf("[DEBUG-tmp] agent: setupTLSClientConfig setting tlsConfig.Address: %s, tlsConfig.KeyFile: %s, tlsConfig.CertFile: %s, tlsConfig.CAFile: %s, tlsConfig.CAPath: %s", tlsConfig.Address, tlsConfig.KeyFile, tlsConfig.CertFile, tlsConfig.CAFile, tlsConfig.CAPath)
 	return
 }
 
